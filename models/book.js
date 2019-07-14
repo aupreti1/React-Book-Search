@@ -2,15 +2,12 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const bookSchema = new Schema({
-    title: String,
-    authors: [String],
+    title: { Type: String, required: true },
+    authors: [{ Type: String, required: true }],
     description: String,
-    img: {
-        type:{ String }
-    },
-    infoLink: {
-        type: String
-    }
+    image: {type: String, trim: true},
+    link: {type: String, trim: true},
+    date: { type: Date, default: Date.now }
 });
 
 const Book = mongoose.model("Book", bookSchema);
