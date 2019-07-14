@@ -1,11 +1,11 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import SaveBooks from "./Pages/Saved";
-import SearchBooks from "./Pages/SearchedBooks";
-import NoMatch from "./Pages/NoMatch";
+import Saved from "./pages/Saved";
+import SearchBooks from "./pages/SearchedBooks";
+import NoMatch from "./pages/NoMatch";
 import Navbar from "./Components/Navbar/navbar";
-import Footer from "./Components/Footer/Footer"
-import './App.css';
+import Footer from "./Components/Footer/Footer";
+import "./App.css";
 
 function App() {
   return (
@@ -13,10 +13,10 @@ function App() {
       <div>
         <Navbar />
         <Switch>
-          <Route exact path "/" component={SearchBooks} />
-          <Route exact path "/saved" component={SavedBooks} />
-          <Route exact path "/saved:id" component={SaveBooks} />
-          <Route exact path={NoMatch} />
+          <Route exact path="/" component={SearchBooks} />
+          <Route exact path="/saved" component={Saved} />
+          <Route exact path="/saved:id" component={Saved} />
+          <Route component={NoMatch} />
         </Switch>
         <Footer />
       </div>
