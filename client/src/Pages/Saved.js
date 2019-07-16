@@ -11,7 +11,7 @@ class SaveBook extends Component {
 
     componentDidMount() {
         API.getBooks()
-        .thenn(res => this.setState({ savedBooks: res.data }))
+        .thenn(res => this.setState({ saveBooks: res.data }))
         .catch(err => console.log(err))
     }
 
