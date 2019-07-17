@@ -1,82 +1,125 @@
-import React, { Component } from "react";
-import API from "../Utils/API";
-import Jumbotron from "../Components/Jumbotron/Jumbotron";
-import { Container, Row, Col } from "../Components/Grid/Grid";
-import SearchForm from "../Components/SearchForm/SearchForm";
-import SearchResult from "../Components/SearchResult/SearchResult";
+import React, { Component } from 'react';
 
-class SearchBooks extends Component {
-    state = {
-        search: "",
-        books: [],
-        error: "",
-        message: ""
+import API from '../utils/API';
+
+import SearchForm from '../components/SearchForm/SearchForm';
+import BookList from '../components/BookList/index';
+import MessageBox from '../components/MessageBox/index';
+
+class Books extends Component {
+  state = {
+    searchValue: '',
+    books: [],
+    notif: {
+      isActive: false,
+      type: '',
+      message: ''
+    }
+  }
+
+  handleChange = (e) => {
+    e.preventDefault();
+    this.setState({ searchValue: e.target.value });
+  }
+
+  search = () => {
+    console.log('it will search for ', this.state.searchValue)
+    API.searchBooks(this.state.searchValue)
+      .then(response => {
+        console.log(response);
+        
+        this.setState({
+          books: response.data,
+          searchValue: '',
+          notif: {
+            isActive: true,
+            type: 'success',
+            message: `Search Found for ${this.state.searchValue}`
+          }
+        });
+      })
+      .catch(err => {
+        this.setState({
+          notif: {
+            isActive: true,
+            type: 'danger',
+            message: `Search Not Found for ${this.state.searchValue}`
+          }
+        });
+      });
+  }
+
+  saveBook = (book) => {
+    const bookData = {
+      title: book.title,
+      authors: book.authors,
+      infoLink: book.infoLink,
+      img: book.imageLinks.smallThumbnail,
+      description: book.description
     };
 
-    handleInputChange = event => {
-        this.setState({ search: event.target.value })
-    }
+    API.saveBook(bookData)
+      .then(response => {
+        console.log('the res', response);
 
-    handleFormSubmit = event => {
-        event.preventDefault();
-        API.getGoogleSearchBooks(this.state.search)
-            .then(res => {
-                if (res.data.items === "error") {
-                    throw new Error(res.data.items);
-                }
-                else {
-                    let results = res.data.items
-                    results = results.map(result => {
-                        result = {
-                            key: result.id,
-                            id: result.id,
-                            title: result.volumeInfo.title,
-                            author: result.volumeInfo.authors,
-                            description: result.volumeInfo.description,
-                            image: result.volumeInfo.imageLinks.thumbnail,
-                            link: result.volumeInfo.infoLink
-                        }
-                        return result;
-                    })
-                    this.setState({ books: results, error: "" })
-                }
-            })
-            .catch(err => this.setState({ error: err.items }));
-    }
+        this.setState({
+          notif: {
+            isActive: true,
+            type: 'success',
+            message: `${bookData.title} Successfully Saved`
+          }
+        });
 
-    handleSavedButton = event => {
-        event.preventDefault();
-        console.log(this.state.books)
-        let savedBooks = this.state.books.filter(book => book.id === event.target.id)
-        savedBooks = savedBooks[0];
-        API.saveBook(savedBooks)
-            .then(this.setState({ message: alert("Book has been saved!") }))
-            .catch(err => console.log(err))
-    }
+        // setTimeout(() => {
+        //   this.props.history.push('/saved');
+        // }, 3000);
+      })
+      .catch(err => {
+        this.setState({
+          notif: {
+            isActive: true,
+            type: 'danger',
+            message: 'Something Went Wrong! Please try again!'
+          }
+        });
+      });
+  }
 
-    render() {
-        return (
-            <Container fluid>
-                <Jumbotron>
-                    <h1 className="text-white">Find A Book Using GoogleBook API</h1>
-                </Jumbotron>
-                <Container>
-                    <Row>
-                        <Col size="12">
-                            <SearchForm
-                            handleFormSubmit={this.handleFormSubmit}
-                            handleInputChange={this.handleInputChange}
-                            />
-                        </Col>
-                    </Row>
-                </Container>
-                <br></br>
-                <Container>
-                    <SearchResult books={this.state.books} handleSavedButton={this.handleSavedButton} />
-                </Container>
-            </Container>
-        )
-    }
+  render() {
+    const { books, searchValue, notif } = this.state;
+
+    return (
+      <div className='Book'>
+        <MessageBox notif={notif} />
+        {/* <SearchForm
+          searchValue={searchValue}
+          handleChange={this.handleChange}
+          search={this.search}
+        /> */}
+        <div className='search'>
+            <h3>Book Search</h3>
+            <div className='input-search'>
+                <input
+                    type='text'
+                    value={searchValue}
+                    className='theme-input'
+                    onChange={this.handleChange}
+                    placeholder='Please Search Book Title'
+                    required
+                />
+                <button type='submit' className='theme-btn' onClick={this.search}>
+                    Search
+                </button>
+            </div>
+        </div>
+        {books.length > 0 ? (
+          <BookList books={books} saveBook={book => this.saveBook(book)} />
+        ) : (
+          <p className='no-data'>No Books Found</p>
+        )}
+      </div>
+    );
+  }
 }
 
-export default SearchBooks;
+export default Books;

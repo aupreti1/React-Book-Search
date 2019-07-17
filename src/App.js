@@ -1,22 +1,23 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { Container } from "reactstrap";
-import Books from "./pages/Books";
-import Saved from "./pages/Saved";
-import Navbar from "./Components/Navbar/navbar";
-import "./App.css";
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { Container } from 'reactstrap';
+import Books from './pages/Books';
+import Saved from './pages/Saved';
+import NavMenu from './components/NavMenu';
+
+import '../src/App.js';
 
 function App() {
   return (
     <Router>
-      <div className="application">
-        <Navbar />
-        <main className="main">
+      <div className='application'>
+        <NavMenu />
+        <main className='main'>
           <Container>
-            <div className="wrapper">
+            <div className='wrapper'>
               <Switch>
-                <Route exat path="/" component={Books} />
-                <Route path="/saved" component={Saved} />
+                <Route exact path='/' component={Books} />
+                <Route path='/saved' component={Saved} />
               </Switch>
             </div>
           </Container>
