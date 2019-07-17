@@ -1,35 +1,84 @@
 import React, {Component } from "react";
 import API from "../Utils/API";
-import Jumbotron from "../Components/Jumbotron/Jumbotron";
-import { Container } from "../Components/Grid/Grid";
-import SavedBooks from "../Components/SavedBooks";
+import SavedBookList from "../Components/SavedBookList";
+import MessageBox from "../Components/MessageBox";
 
-class SaveBook extends Component {
-    state = {
-        savedBooks: []
-    };
+class Saved extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            savedBooks: [],
+            notif: {
+                isActive: false,
+                message: ""
+            }
+        };
+    }
 
     componentDidMount() {
         API.getBooks()
-        .thenn(res => this.setState({ saveBooks: res.data }))
-        .catch(err => console.log(err))
+        .then(response => {
+            this.setState({
+                savedBooks: response.data
+            });
+        })
+        .catch(err => {
+            this.setState({
+                notif: {
+                    isActive: true,
+                    type: "danger",
+                    message: "Please Try Again!"
+                }
+            });
+        });
     }
 
-    handleDeleteButton = id => {
-        API.deleteBook(id)
-        .then(res => this.componentDidMount())
-        .catch(err => console.log(err))
-    }
+    deleteBook(Id, Index) {
+        this.setState(state => {
+            const savedBooks = state.savedBooks.filter((item, j) => Index !== j);
+
+            return {
+                savedBooks
+            };
+        });
+
+        API.deleteBook(Id)
+            .then(response => {
+                this.setState({
+                    notif: {
+                        isActive: true,
+                        type: "success",
+                        message: "Deleted!"
+                    }
+                });
+            })
+            .catch(err => {
+                this.setState({
+                    notif: {
+                        isActive: true,
+                        type: "danger",
+                        message: "Please Try Again"
+                    }
+                });
+            });
+        }
+    
 
     render() {
+        const { savedBooks, notif } = this.state;
         return (
-            <Container fluid className="container">
-                <Jumbotron />
-                <Container>
-                    <SavedBooks savedBooks={this.state.savedBooks} handleDeleteButton={this.handleDeleteButton} />
-                </Container>
-            </Container>
-        )
+            <div className="saved">
+                <messageBox notif={notif} />
+                {savedBooks.length > 0 ? (
+                    <SavedBookList
+                        books={savedBooks}
+                        deleteBook={(id, index) => this.deleteBook(id, index)}
+                    />
+                ) : (
+                    <p className="no-data">There Are No Saved Books!</p>
+                )}
+            </div>
+        );
     }
 }
 
