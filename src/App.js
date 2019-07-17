@@ -1,24 +1,26 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { Container } from "reactstrap";
+import Books from "./pages/Books";
 import Saved from "./pages/Saved";
-import SearchBooks from "./pages/SearchedBooks";
-import NoMatch from "./pages/NoMatch";
 import Navbar from "./Components/Navbar/navbar";
-import Footer from "./Components/Footer/Footer";
 import "./App.css";
 
 function App() {
   return (
     <Router>
-      <div>
+      <div className="application">
         <Navbar />
-        <Switch>
-          <Route exact path="/" component={SearchBooks} />
-          <Route exact path="/saved" component={Saved} />
-          <Route exact path="/saved:id" component={Saved} />
-          <Route component={NoMatch} />
-        </Switch>
-        <Footer />
+        <main className="main">
+          <Container>
+            <div className="wrapper">
+              <Switch>
+                <Route exat path="/" component={Books} />
+                <Route path="/saved" component={Saved} />
+              </Switch>
+            </div>
+          </Container>
+        </main>
       </div>
     </Router>
   );
