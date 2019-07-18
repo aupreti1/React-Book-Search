@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Collapse, NavLink, NavbarToggler, Nav, NavItem } from 'reactstrap';
-import { Link } from 'react-router-dom';
+import {NavLink, Nav, NavItem } from 'reactstrap';
+//import { Link } from 'react-router-dom';
 import './style.css';
 
 class NavMenu extends Component {

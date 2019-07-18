@@ -91,11 +91,6 @@ class Books extends Component {
     return (
       <div className='Book'>
         <MessageBox notif={notif} />
-        {/* <SearchForm
-          searchValue={searchValue}
-          handleChange={this.handleChange}
-          search={this.search}
-        /> */}
         <div className='search'>
             <h3>Book Search</h3>
             <div className='input-search'>

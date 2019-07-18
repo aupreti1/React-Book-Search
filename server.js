@@ -19,6 +19,14 @@ app.use(routes);
 
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true});
 
+process.on('uncaughtException', err => {
+    console.log('there was an uncaught error', err);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    console.log(`Unhandled Rejection - reason: ${reason}`);
+});
+
 //start the server
 app.listen(PORT,() => {
     console.log('API server now listening on PORT 5000!');
